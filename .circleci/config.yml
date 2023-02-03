@@ -33,7 +33,7 @@ executors:
   my-executor:
     machine:
       image: ubuntu-2004:current
-    resource_class: small
+    resource_class: medium
 
 workflows:
   version: 2
