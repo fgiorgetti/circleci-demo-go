@@ -5,7 +5,8 @@ jobs: # basic units of work in a run
   verify-go:
     executor: my-executor
     steps:
-      - go/install
+      - go/install:
+          version: 1.19
       - run:
           name: go version
           command: |
