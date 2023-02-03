@@ -1,6 +1,6 @@
 version: 2.1 # use CircleCI 2.0
 orbs:
-    go: circleci/go@1.7.2
+    go: circleci/go@1.7.1
 jobs: # basic units of work in a run
   verify-go:
     executor: my-executor
