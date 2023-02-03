@@ -40,8 +40,7 @@ workflows:
   build-workflow:
     jobs:
       - verify-go
-      - build
       - push-master-images:
           <<: *run_for_master_branch
           requires:
-            - build
+            - verify-go
