@@ -1,9 +1,9 @@
 version: 2.1 # use CircleCI 2.0
 orbs:
     go: circleci/go@1.7.2
-jobs: # basic units of work in a run
+commands:
   podman-latest:
-    executor: my-executor
+    description: "Install latest podman v4 or higher"
     steps:
       - run:
           name: install podman
@@ -24,7 +24,6 @@ jobs: # basic units of work in a run
             systemctl --user start podman.socket
             systemctl --user status podman.socket
   verify-go:
-    executor: my-executor
     steps:
       - go/install:
           version: "1.19"
@@ -32,7 +31,54 @@ jobs: # basic units of work in a run
           name: go version
           command: |
             go version
+  clone-skupper:
+    steps:
+      - run:
+          name: "clone skupper repo"
+          command: |
+            git clone https://github.com/skupperproject/skupper
+  generate-client:
+    steps:
+      - run:
+          name: "generate skupper clients"
+          command: |
+            cd skupper && make generate-client build-cmd
+  podman-system-tests:
+    steps:
+      - run:
+          name: "run podman system tests"
+          command: |
+            cd skupper && go test -count=1 -v -tags=podman ./pkg/domain/podman/... -use-cluster
+  minikube-install:
+    description: Installs the minikube executable onto the system.
+    steps:
+      - run:
+          command: >-
+            curl -Lo minikube
+            https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 &&
+            chmod +x minikube && sudo
+            mv minikube /usr/local/bin/
+          name: Install Minikube Executable
 
+  minikube-start-medium:
+    description: Starts the minikube service, with 2 CPU and 2 GiB
+    steps:
+      - run:
+          command: >-
+            minikube start --vm-driver=docker --cpus 2 --memory 2048
+          name: Start Minikube Cluster
+jobs: # basic units of work in a run
+  skupper-podman-tests:
+    description: "Run podman system tests for Skupper"
+    executor: my-executor
+    steps:
+      - minikube-install
+      - minikube-start-medium
+      - podman-latest
+      - verify-go
+      - clone-skupper
+      - generate-client
+      - podman-system-tests
   push-master-images:
     docker:
       - image: circleci/golang:1.19
