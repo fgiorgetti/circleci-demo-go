@@ -55,7 +55,7 @@ anchors:
 executors:
   my-executor:
     machine:
-      image: ubuntu-2004:current
+      image: ubuntu-2204:2022.10.2
     resource_class: medium
 
 workflows:
