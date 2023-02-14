@@ -22,7 +22,7 @@ commands:
 
             # Starting systemd user service
             systemctl --user start podman.socket
-            systemctl --user status podman.socket
+            # hanging # systemctl --user status podman.socket
   verify-go:
     steps:
       - go/install:
