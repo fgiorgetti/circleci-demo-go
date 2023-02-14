@@ -108,9 +108,8 @@ workflows:
   version: 2
   build-workflow:
     jobs:
-      - podman-latest
-      - verify-go
-      - push-master-images:
-          <<: *run_for_master_branch
-          requires:
-            - verify-go
+      - skupper-podman-tests
+#      - push-master-images:
+#          <<: *run_for_master_branch
+#          requires:
+#            - verify-go
