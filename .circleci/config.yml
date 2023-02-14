@@ -67,6 +67,13 @@ commands:
           command: >-
             minikube start --vm-driver=docker --cpus 2 --memory 2048
           name: Start Minikube Cluster
+  minikube-start-load-balancer:
+    description: Starts the minikube tunnel
+    steps:
+      - run:
+          command: minikube tunnel
+          name: Start Minikube Tunnel
+          background: true
 jobs: # basic units of work in a run
   skupper-podman-tests:
     description: "Run podman system tests for Skupper"
@@ -74,6 +81,7 @@ jobs: # basic units of work in a run
     steps:
       - minikube-install
       - minikube-start-medium
+      - minikube-start-load-balancer
       - podman-latest
       - verify-go
       - clone-skupper
