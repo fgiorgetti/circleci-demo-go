@@ -36,7 +36,7 @@ commands:
       - run:
           name: "clone skupper repo"
           command: |
-            git clone https://github.com/skupperproject/skupper
+            git clone -b podman-integ-test https://github.com/fgiorgetti/skupper
   generate-client:
     steps:
       - run:
@@ -49,6 +49,12 @@ commands:
           name: "run podman system tests"
           command: |
             cd skupper && go test -count=1 -v -tags=podman ./pkg/domain/podman/... -use-cluster
+  podman-integ-tests:
+    steps:
+      - run:
+          name: "run podman integration tests"
+          command: |
+            cd skupper && go test -count=1 -v -tags=podman,integration ./test/integration/examples/custom/helloworld -run TestHelloWorldCLIOnPodman
   minikube-install:
     description: Installs the minikube executable onto the system.
     steps:
