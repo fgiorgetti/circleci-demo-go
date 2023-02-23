@@ -93,6 +93,7 @@ jobs: # basic units of work in a run
       - clone-skupper
       - generate-client
       - podman-system-tests
+      - podman-integ-tests
   push-master-images:
     docker:
       - image: circleci/golang:1.19
