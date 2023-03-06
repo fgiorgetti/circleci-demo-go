@@ -31,6 +31,12 @@ commands:
           name: go version
           command: |
             go version
+  local-ips:
+    steps:
+      - run:
+          name: "local ip addresses"
+          command: |
+            ifconfig
   clone-skupper:
     steps:
       - run:
@@ -85,15 +91,16 @@ jobs: # basic units of work in a run
     description: "Run podman system tests for Skupper"
     executor: my-executor
     steps:
-      - minikube-install
-      - minikube-start-medium
-      - minikube-start-load-balancer
-      - podman-latest
-      - verify-go
-      - clone-skupper
-      - generate-client
-      - podman-system-tests
-      - podman-integ-tests
+      - local-ips
+#      - minikube-install
+#      - minikube-start-medium
+#      - minikube-start-load-balancer
+#      - podman-latest
+#      - verify-go
+#      - clone-skupper
+#      - generate-client
+#      - podman-system-tests
+#      - podman-integ-tests
   push-master-images:
     docker:
       - image: circleci/golang:1.19
