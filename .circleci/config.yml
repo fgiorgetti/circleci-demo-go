@@ -36,7 +36,7 @@ commands:
       - run:
           name: "local ip addresses"
           command: |
-            ifconfig
+            ip addr show
   clone-skupper:
     steps:
       - run:
