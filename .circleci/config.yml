@@ -42,7 +42,7 @@ commands:
       - run:
           name: "clone skupper repo"
           command: |
-            git clone -b podman-integ-test https://github.com/fgiorgetti/skupper
+            git clone -b podman-cli-test-fix https://github.com/fgiorgetti/skupper
   generate-client:
     steps:
       - run:
@@ -92,15 +92,15 @@ jobs: # basic units of work in a run
     executor: my-executor
     steps:
       - local-ips
-#      - minikube-install
-#      - minikube-start-medium
-#      - minikube-start-load-balancer
-#      - podman-latest
-#      - verify-go
-#      - clone-skupper
-#      - generate-client
+      - minikube-install
+      - minikube-start-medium
+      - minikube-start-load-balancer
+      - podman-latest
+      - verify-go
+      - clone-skupper
+      - generate-client
 #      - podman-system-tests
-#      - podman-integ-tests
+      - podman-integ-tests
   push-master-images:
     docker:
       - image: circleci/golang:1.19
