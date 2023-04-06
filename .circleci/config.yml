@@ -31,6 +31,14 @@ commands:
           name: go version
           command: |
             go version
+  go-junit:
+    steps:
+      - go/install:
+          version: "1.19"
+      - run:
+          name: go junit reporter
+          command: |
+            go install github.com/jstemmer/go-junit-report@v1.0.0
   local-ips:
     steps:
       - run:
@@ -60,7 +68,10 @@ commands:
       - run:
           name: "run podman integration tests"
           command: |
-            cd skupper && make build-cmd && sudo install skupper /usr/local/bin && go test -count=1 -v -tags=podman,integration ./test/integration/examples/custom/helloworld -run TestHelloWorldCLIOnPodman
+            cd skupper && make build-cmd && sudo install skupper /usr/local/bin && go test -count=1 -v -tags=podman,integration ./test/integration/examples/custom/helloworld -run TestHelloWorldCLIOnPodman | tee test-podman.out
+            cat test-podman.out | go-junit-report > test-podman.xml
+      - store_test_results:
+        path: skupper
   minikube-install:
     description: Installs the minikube executable onto the system.
     steps:
