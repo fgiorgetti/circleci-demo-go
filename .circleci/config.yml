@@ -108,6 +108,7 @@ jobs: # basic units of work in a run
       - minikube-start-load-balancer
       - podman-latest
       - verify-go
+      - go-junit
       - clone-skupper
       - generate-client
 #      - podman-system-tests
