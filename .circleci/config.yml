@@ -71,7 +71,7 @@ commands:
             cd skupper && make build-cmd && sudo install skupper /usr/local/bin && go test -count=1 -v -tags=podman,integration ./test/integration/examples/custom/helloworld -run TestHelloWorldCLIOnPodman | tee test-podman.out
             cat test-podman.out | go-junit-report > test-podman.xml
       - store_test_results:
-        path: skupper
+          path: skupper
   minikube-install:
     description: Installs the minikube executable onto the system.
     steps:
