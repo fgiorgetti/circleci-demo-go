@@ -143,7 +143,7 @@ workflows:
   build-workflow:
     jobs:
       - skupper-podman-tests
-          context:
+          contexts:
             - my-context
 #      - push-master-images:
 #          <<: *run_for_master_branch
