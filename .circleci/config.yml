@@ -140,11 +140,11 @@ executors:
     resource_class: medium
 
 workflows:
+  version: 2.1
   build-workflow:
     jobs:
       - skupper-podman-tests
-          contexts:
-            - my-context
+          contexts: my-context
 #      - push-master-images:
 #          <<: *run_for_master_branch
 #          requires:
