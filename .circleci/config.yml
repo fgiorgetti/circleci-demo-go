@@ -100,7 +100,6 @@ commands:
           background: true
 jobs: # basic units of work in a run
   skupper-podman-tests:
-    context: my-context
     description: "Run podman system tests for Skupper"
     executor: my-executor
     steps:
@@ -145,6 +144,7 @@ workflows:
   build-workflow:
     jobs:
       - skupper-podman-tests
+          context: "my-context"
 #      - push-master-images:
 #          <<: *run_for_master_branch
 #          requires:
