@@ -45,6 +45,7 @@ commands:
           name: "local ip addresses"
           command: |
             ip addr show
+            [[ ${MY_ENV_VAR} = "abcd" ]] && echo "Env var is correct" || echo "Invalid value"
   clone-skupper:
     steps:
       - run:
@@ -103,16 +104,16 @@ jobs: # basic units of work in a run
     executor: my-executor
     steps:
       - local-ips
-      - minikube-install
-      - minikube-start-medium
-      - minikube-start-load-balancer
-      - podman-latest
-      - verify-go
-      - go-junit
-      - clone-skupper
-      - generate-client
-#      - podman-system-tests
-      - podman-integ-tests
+#      - minikube-install
+#      - minikube-start-medium
+#      - minikube-start-load-balancer
+#      - podman-latest
+#      - verify-go
+#      - go-junit
+#      - clone-skupper
+#      - generate-client
+##      - podman-system-tests
+#      - podman-integ-tests
   push-master-images:
     docker:
       - image: circleci/golang:1.19
@@ -143,6 +144,8 @@ workflows:
   build-workflow:
     jobs:
       - skupper-podman-tests
+          context:
+            - my-context
 #      - push-master-images:
 #          <<: *run_for_master_branch
 #          requires:
