@@ -140,7 +140,6 @@ executors:
     resource_class: medium
 
 workflows:
-  version: 2
   build-workflow:
     jobs:
       - skupper-podman-tests
