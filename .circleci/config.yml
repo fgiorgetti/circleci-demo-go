@@ -45,7 +45,7 @@ commands:
           name: "local ip addresses"
           command: |
             ip addr show
-            [[ ${MY_ENV_VAR} = "abcd" ]] && echo "Env var is correct" || echo "Invalid value"
+            [[ "${MY_ENV_VAR}" = "abcd" ]] && echo "Env var is correct" || echo "Invalid value"
   clone-skupper:
     steps:
       - run:
