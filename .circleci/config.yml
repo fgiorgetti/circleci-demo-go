@@ -144,7 +144,7 @@ workflows:
   build-workflow:
     jobs:
       - skupper-podman-tests:
-          context: "my-context"
+          context: test-fernando
 #      - push-master-images:
 #          <<: *run_for_master_branch
 #          requires:
