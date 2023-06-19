@@ -50,6 +50,7 @@ commands:
     steps:
       - run:
           name: "create docker registry"
+          background: true
           command: |
             docker run --name registry -d -p 5000:5000 registry
   list-containers-job:
