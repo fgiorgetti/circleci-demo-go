@@ -165,7 +165,7 @@ workflows:
     jobs:
       - skupper-podman-tests:
           context: test-fernando
-      - use-registry
+      - use-registry:
           requires: skupper-podman-tests
 #      - push-master-images:
 #          <<: *run_for_master_branch
