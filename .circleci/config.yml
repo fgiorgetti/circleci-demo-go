@@ -44,7 +44,8 @@ commands:
       - run:
           name: "local ip addresses"
           command: |
-            ip addr show
+            LOCAL_IP=$(ip addr show | grep inet\ | grep -vE 'lo$|docker' | awk '{print $2}' | awk -F '/' '{print $1}')
+            echo "export LOCAL_IP=${LOCAL_IP}" >> ${BASH_ENV}
             [[ "${MY_ENV_VAR}" = "abcd" ]] && echo "Env var is correct" || echo "Invalid value"
   docker-registry:
     steps:
@@ -59,6 +60,7 @@ commands:
           command: |
             set
             docker ps
+            echo "Local IP = ${LOCAL_IP}"
   clone-skupper:
     steps:
       - run:
