@@ -145,6 +145,7 @@ jobs: # basic units of work in a run
     description: "list docker containers"
     executor: my-executor
     steps:
+      - docker-registry
       - list-containers-job
 anchors:
   branch_filters: &run_for_master_branch
