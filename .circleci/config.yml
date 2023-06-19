@@ -121,6 +121,15 @@ jobs: # basic units of work in a run
       - local-ips
       - docker-registry
       - list-containers-job
+      - run:
+          command: |
+            mkdir /tmp/images
+            echo blabla /tmp/images/image.data
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - images
+
 #      - minikube-install
 #      - minikube-start-medium
 #      - minikube-start-load-balancer
@@ -149,6 +158,12 @@ jobs: # basic units of work in a run
     steps:
       - docker-registry
       - list-containers-job
+      - run:
+          command: |
+            ls -ld /tmp/images
+            ls -l /tmp/images
+            cat /tmp/images/image.data
+            
 anchors:
   branch_filters: &run_for_master_branch
     filters:
