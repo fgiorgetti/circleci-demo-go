@@ -156,6 +156,8 @@ jobs: # basic units of work in a run
     description: "list docker containers"
     executor: my-executor
     steps:
+      - attach_workspace:
+          at: /tmp/
       - docker-registry
       - list-containers-job
       - run:
