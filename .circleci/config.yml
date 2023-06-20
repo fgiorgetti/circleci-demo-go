@@ -124,7 +124,7 @@ jobs: # basic units of work in a run
       - run:
           command: |
             mkdir /tmp/images
-            echo blabla /tmp/images/image.data
+            echo blabla > /tmp/images/image.data
       - persist_to_workspace:
           root: /tmp
           paths:
