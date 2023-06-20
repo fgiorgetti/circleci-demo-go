@@ -128,7 +128,7 @@ jobs: # basic units of work in a run
       - persist_to_workspace:
           root: /tmp
           paths:
-            - images/*
+            - images/.*
 
 #      - minikube-install
 #      - minikube-start-medium
