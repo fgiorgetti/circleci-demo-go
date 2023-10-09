@@ -129,6 +129,15 @@ jobs: # basic units of work in a run
       - clone-skupper
       - generate-client
       - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
 ##      - podman-system-tests
   push-master-images:
     docker:
@@ -175,9 +184,9 @@ workflows:
     jobs:
       - skupper-podman-tests:
           context: test-fernando
-      - use-registry:
-          requires:
-            - skupper-podman-tests
+#      - use-registry:
+#          requires:
+#            - skupper-podman-tests
 #      - push-master-images:
 #          <<: *run_for_master_branch
 #          requires:
