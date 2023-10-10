@@ -72,6 +72,12 @@ commands:
           name: "generate skupper clients"
           command: |
             cd skupper && make generate-client build-cmd
+  sleep:
+    steps:
+      - run:
+          name: "sleeping 3600 seconds"
+          command: |
+            sleep 3600
   podman-system-tests:
     steps:
       - run:
@@ -128,9 +134,7 @@ jobs: # basic units of work in a run
       - go-junit
       - clone-skupper
       - generate-client
-      - name: Sleeping 3600 secs
-        run: |
-          sleep 3600
+      - sleep
 #      - podman-integ-tests
 #      - podman-system-tests
   push-master-images:
