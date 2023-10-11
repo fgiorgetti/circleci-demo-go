@@ -20,6 +20,10 @@ commands:
             sudo apt-get -qq -y install podman
             podman version
 
+            # Bypassing CircleCI issue with user session (see: https://github.com/containers/podman/issues/16529)
+            mkdir -p ~/.config/containers/containers.conf.d
+            ( echo '[engine]' ; echo 'cgroup_manager = "cgroupfs"' ) > ~/.config/containers/containers.conf.d/podman-issue-16529.conf
+
             # Starting systemd user service
             systemctl --user start podman.socket
   verify-go:
