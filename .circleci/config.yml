@@ -83,6 +83,21 @@ commands:
           name: "sleeping 3600 seconds"
           command: |
             sleep 3600
+  system_monitor:
+    description: shows continuous system state
+    steps:
+    - run:
+        name: sar info
+        command: sar -h -q -r -u 60
+        background: true
+    - run:
+        name: vmstat info
+        command: vmstat -w -t 10
+        background: true
+    - run:
+        name: journalctl monitoring
+        command: journalctl --user -p 3 -xb -f
+        background: true
   podman-system-tests:
     steps:
       - run:
@@ -94,6 +109,7 @@ commands:
       - run:
           name: "run podman integration tests"
           command: |
+            export SKUPPER_TEST_CLI_MAX_STATUS_ATTEMPTS=5
             cd skupper && sed -i 's#RouterLogging:       "trace"#RouterLogging:       "info"#g' ./test/integration/examples/custom/helloworld/helloworld_podman_test.go && make build-cmd && sudo install skupper /usr/local/bin && go test -count=1 -v -tags=podman,integration ./test/integration/examples/custom/helloworld -run TestHelloWorldCLIOnPodman | tee test-podman.out
             cat test-podman.out | go-junit-report > test-podman.xml
       - store_test_results:
