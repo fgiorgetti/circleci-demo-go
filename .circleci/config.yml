@@ -155,6 +155,7 @@ jobs: # basic units of work in a run
       - go-junit
       - clone-skupper
       - generate-client
+      - system_monitor
       - podman-integ-tests
       - podman-integ-tests
       - podman-integ-tests
