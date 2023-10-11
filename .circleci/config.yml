@@ -138,8 +138,16 @@ jobs: # basic units of work in a run
       - go-junit
       - clone-skupper
       - generate-client
-      - sleep
-#      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
 #      - podman-system-tests
   push-master-images:
     docker:
