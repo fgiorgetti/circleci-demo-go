@@ -95,8 +95,12 @@ commands:
         command: vmstat -w -t 10
         background: true
     - run:
-        name: journalctl monitoring
+        name: journalctl user session
         command: journalctl --user -p 3 -xb -f
+        background: true
+    - run:
+        name: journalctl
+        command: journalctl -p 3 -xb -f
         background: true
   podman-system-tests:
     steps:
@@ -110,6 +114,7 @@ commands:
           name: "run podman integration tests"
           command: |
             export SKUPPER_TEST_CLI_MAX_STATUS_ATTEMPTS=5
+            export SKUPPER_TEST_SKIP_DEBUG=true
             cd skupper && sed -i 's#RouterLogging:       "trace"#RouterLogging:       "info"#g' ./test/integration/examples/custom/helloworld/helloworld_podman_test.go && make build-cmd && sudo install skupper /usr/local/bin && go test -count=1 -v -tags=podman,integration ./test/integration/examples/custom/helloworld -run TestHelloWorldCLIOnPodman | tee test-podman.out
             cat test-podman.out | go-junit-report > test-podman.xml
       - store_test_results:
