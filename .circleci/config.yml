@@ -96,11 +96,11 @@ commands:
         background: true
     - run:
         name: journalctl user session
-        command: journalctl --user -p 3 -xb -f
+        command: journalctl --user -p 7 -xb -f
         background: true
     - run:
         name: journalctl
-        command: journalctl -p 3 -xb -f
+        command: journalctl -p 7 -xb -f
         background: true
   podman-system-tests:
     steps:
