@@ -115,7 +115,7 @@ commands:
           command: |
             export SKUPPER_TEST_CLI_MAX_STATUS_ATTEMPTS=5
             export SKUPPER_TEST_SKIP_DEBUG=true
-            sudo killall -9 conmon
+            sudo killall -9 conmon || true
             cd skupper && sed -i 's#RouterLogging:       "trace"#RouterLogging:       "info"#g' ./test/integration/examples/custom/helloworld/helloworld_podman_test.go && make build-cmd && sudo install skupper /usr/local/bin && go test -count=1 -v -tags=podman,integration ./test/integration/examples/custom/helloworld -run TestHelloWorldCLIOnPodman | tee test-podman.out
             cat test-podman.out | go-junit-report > test-podman.xml
       - store_test_results:
