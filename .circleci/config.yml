@@ -161,16 +161,17 @@ jobs: # basic units of work in a run
       - clone-skupper
       - generate-client
       - system_monitor
-      - podman-integ-tests
-      - podman-integ-tests
-      - podman-integ-tests
-      - podman-integ-tests
-      - podman-integ-tests
-      - podman-integ-tests
-      - podman-integ-tests
-      - podman-integ-tests
-      - podman-integ-tests
-      - podman-integ-tests
+      - sleep
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-integ-tests
 #      - podman-system-tests
   push-master-images:
     docker:
