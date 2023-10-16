@@ -22,8 +22,8 @@ commands:
 
             # Bypassing CircleCI issue with user session (see: https://github.com/containers/podman/issues/16529)
             mkdir -p ~/.config/containers/containers.conf.d
-            ( echo '[containers]' ; echo 'cgroups = "disabled"' ) > ~/.config/containers/containers.conf.d/podman-issue-16529.conf
-            #( echo '[engine]' ; echo 'cgroup_manager = "cgroupfs"' ) >> ~/.config/containers/containers.conf.d/podman-issue-16529.conf
+            #( echo '[containers]' ; echo 'cgroups = "disabled"' ) > ~/.config/containers/containers.conf.d/podman-issue-16529.conf
+            ( echo '[engine]' ; echo 'cgroup_manager = "cgroupfs"' ) >> ~/.config/containers/containers.conf.d/podman-issue-16529.conf
 
             # Starting systemd user service
             systemctl --user start podman.socket
@@ -115,6 +115,7 @@ commands:
           command: |
             export SKUPPER_TEST_CLI_MAX_STATUS_ATTEMPTS=5
             export SKUPPER_TEST_SKIP_DEBUG=true
+            sudo killall -9 conmon
             cd skupper && sed -i 's#RouterLogging:       "trace"#RouterLogging:       "info"#g' ./test/integration/examples/custom/helloworld/helloworld_podman_test.go && make build-cmd && sudo install skupper /usr/local/bin && go test -count=1 -v -tags=podman,integration ./test/integration/examples/custom/helloworld -run TestHelloWorldCLIOnPodman | tee test-podman.out
             cat test-podman.out | go-junit-report > test-podman.xml
       - store_test_results:
