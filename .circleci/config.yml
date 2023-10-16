@@ -162,12 +162,12 @@ jobs: # basic units of work in a run
       - clone-skupper
       - generate-client
       - system_monitor
-      - sleep
-#      - podman-integ-tests
-#      - podman-integ-tests
-#      - podman-integ-tests
-#      - podman-integ-tests
-#      - podman-integ-tests
+#      - sleep
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
+      - podman-integ-tests
 #      - podman-integ-tests
 #      - podman-integ-tests
 #      - podman-integ-tests
