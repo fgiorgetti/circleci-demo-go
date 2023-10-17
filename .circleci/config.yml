@@ -71,7 +71,7 @@ commands:
       - run:
           name: "clone skupper repo"
           command: |
-            git clone -b podman-cli-test-fix https://github.com/fgiorgetti/skupper
+            git clone -b podman-ci-bypass https://github.com/fgiorgetti/skupper
   generate-client:
     steps:
       - run:
