@@ -1,6 +1,7 @@
 version: 2.1 # use CircleCI 2.0
 orbs:
     go: circleci/go@1.7.2
+    kube-orb: circleci/kubernetes@0.11.0
 commands:
   podman-latest:
     description: "Install latest podman v4 or higher"
