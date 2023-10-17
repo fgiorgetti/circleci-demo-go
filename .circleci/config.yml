@@ -83,7 +83,10 @@ commands:
       - run:
           name: "sleeping 3600 seconds"
           command: |
-            sleep 3600
+            for ((i=0;i<3600;i++)); do
+              echo -n "."
+              sleep 1
+            done
   system_monitor:
     description: shows continuous system state
     steps:
@@ -164,12 +167,7 @@ jobs: # basic units of work in a run
       - clone-skupper
       - generate-client
       - system_monitor
-#      - sleep
-      - podman-integ-tests
-      - podman-integ-tests
-      - podman-integ-tests
-      - podman-integ-tests
-      - podman-integ-tests
+      - sleep
 #      - podman-integ-tests
 #      - podman-integ-tests
 #      - podman-integ-tests
