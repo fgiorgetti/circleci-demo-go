@@ -92,6 +92,11 @@ commands:
           when: always
           command:
             journalctl -b | grep $(podman network inspect net1 -f '{{.NetworkInterface}}')
+      - run:
+          name: dmesg
+          when: always
+          command:
+            sudo dmesg
 jobs:
   reproducer:
     description: "Reproduces podman network issue on CircleCI"
