@@ -66,6 +66,21 @@ commands:
       - run:
           name: Podman network interface port states
           when: always
+          command: journalctl -b | grep $(podman network inspect net1 -f '{{.NetworkInterface}}')
+      - run:
+          name: Restarting curl1 container restores the state
+          when: always
+          command: podman restart curl1
+      - run:
+          name: Executing curl from curl1 after restart
+          when: always
+          command: |
+            export PODMAN="podman --url unix:///run/user/$(id -u)/podman/podman.sock"
+            $PODMAN restart curl1
+            $PODMAN exec curl1 curl --max-time 10 host.containers.internal || exit 1
+      - run:
+          name: Podman network interface port states after curl1 restart
+          when: always
           command:
             journalctl -b | grep $(podman network inspect net1 -f '{{.NetworkInterface}}')
 jobs:
