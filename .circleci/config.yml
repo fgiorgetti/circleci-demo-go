@@ -41,25 +41,25 @@ commands:
           command: |
             export PODMAN="podman --url unix:///run/user/$(id -u)/podman/podman.sock"
 
-            echo Creating network net1
+            echo "Creating network net1"
             $PODMAN network create net1
             echo
 
-            echo Running container named curl1 connected to net1
+            echo "Running container named curl1 connected to net1"
             $PODMAN run --network net1 --name curl1 -itd docker.io/curlimages/curl
             echo
 
-            echo Executing curl (from curl1)
+            echo "Executing curl (from curl1)"
             $PODMAN exec curl --max-time 10 host.containers.internal' || exit 1
             echo
 
             for ((i=0;i<10;i++)); do
             	date
-            	echo Executing curl (from curl2) and removing curl2 container
+            	echo "Executing curl (from curl2) and removing curl2 container"
             	$PODMAN run --rm --network net1 --name curl2 docker.io/curlimages/curl host.containers.internal || exit 2
                 echo
 
-                echo Calling nginx from curl1 container after curl2 is gone
+                echo "Calling nginx from curl1 container after curl2 is gone"
                 $PODMAN exec curl --max-time 10 host.containers.internal' || exit 3
                 echo
             done
