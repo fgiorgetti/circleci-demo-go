@@ -23,6 +23,15 @@ commands:
             ( echo '[containers]' ; echo 'cgroups = "disabled"' ) > ~/.config/containers/containers.conf.d/podman-issue-16529.conf
 
             systemctl --user enable --now podman.socket
+  session-info:
+    description: Session info
+    steps:
+      - run:
+          name: User ID info
+          command: id
+      - run:
+          name: Current cgroup
+          command: cat /proc/self/cgroup
   nginx:
     description: installing nginx
     steps:
