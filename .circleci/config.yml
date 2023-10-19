@@ -50,7 +50,7 @@ commands:
             echo
 
             echo "Executing curl (from curl1)"
-            $PODMAN exec curl1 curl --max-time 10 host.containers.internal' || exit 1
+            $PODMAN exec curl1 curl --max-time 10 host.containers.internal || exit 1
             echo
 
             for ((i=0;i<10;i++)); do
@@ -59,8 +59,8 @@ commands:
             	$PODMAN run --rm --network net1 --name curl2 docker.io/curlimages/curl host.containers.internal || exit 2
                 echo
 
-                echo "Calling nginx from curl1 container after curl2 is gone"
-                $PODMAN exec curl1 curl --max-time 10 host.containers.internal' || exit 3
+                echo "Executing curl again from curl1 container after curl2 is gone"
+                $PODMAN exec curl1 curl --max-time 10 host.containers.internal || exit 3
                 echo
             done
       - run:
