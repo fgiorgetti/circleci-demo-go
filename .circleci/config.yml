@@ -18,10 +18,6 @@ commands:
             sudo apt-get -qq -y install podman
             podman version
 
-            # without it, we are hitting cgroup issues using rootless podman
-            #mkdir -p ~/.config/containers/containers.conf.d
-            #( echo '[containers]' ; echo 'cgroups = "disabled"' ) > ~/.config/containers/containers.conf.d/podman-exec-issue.conf
-
             systemctl --user enable --now podman.socket
   session-info:
     description: Session info
