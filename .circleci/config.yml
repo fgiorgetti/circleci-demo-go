@@ -18,6 +18,9 @@ commands:
             sudo apt-get -qq -y install podman
             podman version
 
+            mkdir -p ~/.config/containers/containers.conf.d
+            ( echo '[engine]' ; echo 'cgroup_manager = "cgroupfs"' ) > ~/.config/containers/containers.conf.d/podman-issue-16529.conf
+
             systemctl --user enable --now podman.socket
   session-info:
     description: Session info
