@@ -33,7 +33,7 @@ commands:
     steps:
     - run:
         command: sudo apt -y install nginx
-  system_monitor:
+  system-monitor:
     description: monitors system state
     steps:
     - run:
@@ -98,7 +98,8 @@ jobs:
     description: "Reproduces podman network issue on CircleCI"
     executor: my-executor
     steps:
-      - system_monitor
+      - system-monitor
+      - session-info
       - podman-latest
       - nginx
       - reproducer
