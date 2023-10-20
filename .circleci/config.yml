@@ -20,6 +20,7 @@ commands:
 
             mkdir -p ~/.config/containers/containers.conf.d
             ( echo '[engine]' ; echo 'cgroup_manager = "cgroupfs"' ) > ~/.config/containers/containers.conf.d/podman-issue-16529.conf
+            ( echo '[storage]' ; echo 'driver = "xfs"' ) > ~/.config/containers/containers.conf.d/storage.conf
 
             systemctl --user enable --now podman.socket
   session-info:
