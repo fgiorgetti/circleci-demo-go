@@ -1,4 +1,7 @@
-version: 2.1
+version: 2.1 # use CircleCI 2.0
+orbs:
+    go: circleci/go@1.7.2
+    kube-orb: circleci/kubernetes@0.11.0
 commands:
   podman-latest:
     description: "Install latest podman v4 or higher"
@@ -18,92 +21,191 @@ commands:
             sudo apt-get -qq -y install podman
             podman version
 
-            systemctl --user enable --now podman.socket
-  session-info:
-    description: Session info
+            # Bypassing CircleCI issue with user session (see: https://github.com/containers/podman/issues/16529)
+            mkdir -p ~/.config/containers/containers.conf.d
+            ( echo '[containers]' ; echo 'cgroups = "disabled"' ) > ~/.config/containers/containers.conf.d/podman-issue-16529.conf
+            #( echo '[engine]' ; echo 'cgroup_manager = "cgroupfs"' ) >> ~/.config/containers/containers.conf.d/podman-issue-16529.conf
+
+            # Starting systemd user service
+            systemctl --user start podman.socket
+  verify-go:
+    steps:
+      - go/install:
+          version: "1.19"
+      - run:
+          name: go version
+          command: |
+            go version
+  go-junit:
+    steps:
+      - go/install:
+          version: "1.19"
+      - run:
+          name: go junit reporter
+          command: |
+            go install github.com/jstemmer/go-junit-report@v1.0.0
+  local-ips:
     steps:
       - run:
-          name: User ID info
-          command: id
+          name: "local ip addresses"
+          command: |
+            LOCAL_IP=$(ip addr show | grep inet\ | grep -vE 'lo$|docker' | awk '{print $2}' | awk -F '/' '{print $1}')
+            echo "export LOCAL_IP=${LOCAL_IP}" >> ${BASH_ENV}
+            [[ "${MY_ENV_VAR}" = "abcd" ]] && echo "Env var is correct" || echo "Invalid value"
+  docker-registry:
+    steps:
       - run:
-          name: Current cgroup
-          command: cat /proc/self/cgroup
-  nginx:
-    description: installing nginx
+          name: "create docker registry"
+          command: |
+            docker run --name registry -d -p 5000:5000 registry
+  list-containers-job:
+    steps:
+      - run:
+          name: "list docker containers"
+          command: |
+            set
+            docker ps
+            echo "Local IP = ${LOCAL_IP}"
+  clone-skupper:
+    steps:
+      - run:
+          name: "clone skupper repo"
+          command: |
+            git clone -b podman-update https://github.com/fgiorgetti/skupper
+  generate-client:
+    steps:
+      - run:
+          name: "generate skupper clients"
+          command: |
+            cd skupper && make generate-client build-cmd
+  sleep:
+    steps:
+      - run:
+          name: "sleeping 3600 seconds"
+          command: |
+            for ((i=0;i<3600;i++)); do
+              echo -n "."
+              sleep 1
+            done
+  system_monitor:
+    description: shows continuous system state
     steps:
     - run:
-        command: sudo apt -y install nginx
-  system-monitor:
-    description: monitors system state
-    steps:
+        name: sar info
+        command: sar -h -q -r -u 60
+        background: true
     - run:
+        name: vmstat info
+        command: vmstat -w -t 10
+        background: true
+    - run:
+        name: journalctl
         command: journalctl -p 7 -xb -f
         background: true
-  reproducer:
+    - run:
+        name: kubectl events
+        command: kubectl get events -A -w
+        background: true
+  podman-system-tests:
     steps:
       - run:
-          name: "reproduce network issue"
+          name: "run podman system tests"
           command: |
-            export PODMAN="podman --url unix:///run/user/$(id -u)/podman/podman.sock"
-
-            echo "Creating network net1"
-            $PODMAN network create net1
-            echo
-
-            echo "Running container named curl1 connected to net1"
-            $PODMAN run --network net1 --name curl1 -d docker.io/curlimages/curl tail -f /dev/null
-            echo
-
-            echo "Executing curl (from curl1)"
-            $PODMAN exec curl1 curl --max-time 10 host.containers.internal || exit 1
-            echo
-
-            for ((i=0;i<10;i++)); do
-            	date
-            	echo "Executing curl (from curl2) and removing curl2 container"
-            	$PODMAN run --rm --network net1 --name curl2 docker.io/curlimages/curl host.containers.internal || exit 2
-                echo
-
-                echo "Executing curl again from curl1 container after curl2 is gone"
-                $PODMAN exec curl1 curl --max-time 10 host.containers.internal || exit 3
-                echo
-            done
+            cd skupper && go test -count=1 -v -tags=podman ./pkg/domain/podman/... -use-cluster
+  podman-integ-tests:
+    steps:
       - run:
-          name: Podman network interface port states
-          when: always
-          command: journalctl -b | grep $(podman network inspect net1 -f '{{.NetworkInterface}}')
-      - run:
-          name: Restarting curl1 container restores the state
-          when: always
-          command: podman restart curl1
-      - run:
-          name: Executing curl from curl1 after restart
-          when: always
+          name: "run podman integration tests"
           command: |
-            export PODMAN="podman --url unix:///run/user/$(id -u)/podman/podman.sock"
-            $PODMAN restart curl1
-            $PODMAN exec curl1 curl --max-time 10 host.containers.internal || exit 1
+            export SKUPPER_TEST_CLI_MAX_STATUS_ATTEMPTS=5
+            export SKUPPER_TEST_SKIP_DEBUG=true
+            cd skupper && sed -i 's#RouterLogging:       "trace"#RouterLogging:       "info"#g' ./test/integration/examples/custom/helloworld/helloworld_podman_test.go && make build-cmd && sudo install skupper /usr/local/bin && go test -count=1 -v -tags=podman,integration ./test/integration/examples/custom/helloworld -run TestHelloWorldCLIOnPodman | tee test-podman.out
+            cat test-podman.out | go-junit-report > test-podman.xml
+      - store_test_results:
+          path: skupper
+  minikube-install:
+    description: Installs the minikube executable onto the system.
+    steps:
       - run:
-          name: Podman network interface port states after curl1 restart
-          when: always
-          command:
-            journalctl -b | grep $(podman network inspect net1 -f '{{.NetworkInterface}}')
+          command: >-
+            curl -Lo minikube
+            https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 &&
+            chmod +x minikube && sudo
+            mv minikube /usr/local/bin/
+          name: Install Minikube Executable
+
+  minikube-start-medium:
+    description: Starts the minikube service, with 2 CPU and 2 GiB
+    steps:
       - run:
-          name: dmesg
-          when: always
-          command:
-            sudo dmesg
-jobs:
-  reproducer:
-    description: "Reproduces podman network issue on CircleCI"
+          command: >-
+            minikube start --vm-driver=docker --cpus 2 --memory 2048
+          name: Start Minikube Cluster
+  minikube-start-load-balancer:
+    description: Starts the minikube tunnel
+    steps:
+      - run:
+          command: minikube tunnel
+          name: Start Minikube Tunnel
+          background: true
+jobs: # basic units of work in a run
+  skupper-podman-tests:
+    description: "Run podman system tests for Skupper"
     executor: my-executor
     steps:
-      - system-monitor
-      - session-info
+      - local-ips
+      - docker-registry
+      - list-containers-job
+      - minikube-install
+      - minikube-start-medium
+      - minikube-start-load-balancer
       - podman-latest
-      - nginx
-      - reproducer
+      - kube-orb/install-kubectl
+      - verify-go
+      - go-junit
+      - clone-skupper
+      - generate-client
+      - system_monitor
+      - sleep
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-integ-tests
+#      - podman-system-tests
+  push-master-images:
+    docker:
+      - image: circleci/golang:1.19
+    parallelism: 1
+    steps:
+      - run:
+          name: Push master images
+          command: |
+            echo "CircleCI playground"
+            ls -l 
+            pwd
+            echo "this must only be executed for master branch only"
+  use-registry:
+    description: "list docker containers"
+    executor: my-executor
+    steps:
+      - attach_workspace:
+          at: /tmp/
+      - docker-registry
+      - list-containers-job
+      - run:
+          command: |
+            ls -ld /tmp/images
+            ls -l /tmp/images
+            cat /tmp/images/image.data
             
+anchors:
+  branch_filters: &run_for_master_branch
+    filters:
+      branches:
+        ignore: /.*/
+        only: /master/
+
 executors:
   my-executor:
     machine:
@@ -114,4 +216,12 @@ workflows:
   version: 2.1
   build-workflow:
     jobs:
-      - reproducer
+      - skupper-podman-tests:
+          context: test-fernando
+#      - use-registry:
+#          requires:
+#            - skupper-podman-tests
+#      - push-master-images:
+#          <<: *run_for_master_branch
+#          requires:
+#            - verify-go
