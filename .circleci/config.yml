@@ -264,14 +264,14 @@ workflows:
       - test-skupper-binary:
           matrix:
             parameters:
-              image: ["centos"]
+              image: ["quay.io/centos/centos"]
               tag: ["stream8", "stream9"]
           requires:
             - build-skupper-binary
       - test-skupper-binary:
           matrix:
             parameters:
-              image: ["fedora"]
+              image: ["quay.io/fedora/fedora"]
               tag: ["38", "39"]
           requires:
             - build-skupper-binary
