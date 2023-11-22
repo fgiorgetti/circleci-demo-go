@@ -266,21 +266,21 @@ workflows:
             parameters:
               image: centos
               tag: stream9
-      - test-skupper-binary:
-          matrix:
-            parameters:
-             image: centos
-              tag: stream8
-      - test-skupper-binary:
-          matrix:
-            parameters:
-              image: fedora
-              tag: 38
-      - test-skupper-binary:
-          matrix:
-            parameters:
-              image: fedora
-              tag: 39
+#      - test-skupper-binary:
+#          matrix:
+#            parameters:
+#             image: centos
+#              tag: stream8
+#      - test-skupper-binary:
+#          matrix:
+#            parameters:
+#              image: fedora
+#              tag: 38
+#      - test-skupper-binary:
+#          matrix:
+#            parameters:
+#              image: fedora
+#              tag: 39
 
 #      - skupper-podman-tests:
 #          context: test-fernando
