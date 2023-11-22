@@ -260,7 +260,7 @@ workflows:
 #       - release
   build-workflow:
     jobs:
-      - build-skupper-binary:
+      - build-skupper-binary
 #      - test-skupper-binary:
 #          image: centos
 #          tag: stream9
