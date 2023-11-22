@@ -225,8 +225,6 @@ jobs: # basic units of work in a run
     parameters:
       image:
         type: string
-      tag:
-        type: string
     docker:
       - image: << parameters.image >>:<< parameters.tag >>
     steps:
@@ -269,15 +267,11 @@ workflows:
       - test-skupper-binary:
           matrix:
             parameters:
-              image: ["quay.io/centos/centos"]
-              tag: ["stream8", "stream9"]
-          requires:
-            - build-skupper-binary
-      - test-skupper-binary:
-          matrix:
-            parameters:
-              image: ["quay.io/fedora/fedora"]
-              tag: ["38", "39"]
+              image:
+                - quay.io/centos/centos:stream8
+                - quay.io/centos/centos:stream9
+                - quay.io/fedora/fedora:38
+                - quay.io/fedora/fedora:39
           requires:
             - build-skupper-binary
 #      - test-skupper-binary:
