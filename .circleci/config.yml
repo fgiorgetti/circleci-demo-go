@@ -226,7 +226,7 @@ jobs: # basic units of work in a run
       image:
         type: string
     docker:
-      - image: << parameters.image >>:<< parameters.tag >>
+      - image: << parameters.image >>
     steps:
       - attach_workspace:
           at: .
