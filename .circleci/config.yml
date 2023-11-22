@@ -262,10 +262,9 @@ workflows:
     jobs:
       - build-skupper-binary
       - test-skupper-binary:
-          matrix:
-            parameters:
-              image: "centos"
-              tag: "stream9"
+          parameters:
+            image: "centos"
+            tag: "stream9"
 #      - test-skupper-binary:
 #          matrix:
 #            parameters:
