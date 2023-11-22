@@ -223,7 +223,7 @@ jobs: # basic units of work in a run
       tag:
         type: string
     docker:
-      - image: << params.image >>:<< params.tag >>
+      - image: << parameters.image >>:<< parameters.tag >>
     steps:
       - attach_workspace:
           at: .
@@ -262,9 +262,10 @@ workflows:
     jobs:
       - build-skupper-binary
       - test-skupper-binary:
-          parameters:
-            image: "centos"
-            tag: "stream9"
+          matrix:
+            parameters:
+              image: "centos"
+              tag: "stream9"
 #      - test-skupper-binary:
 #          matrix:
 #            parameters:
