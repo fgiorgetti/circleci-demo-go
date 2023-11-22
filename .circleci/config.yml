@@ -1,5 +1,6 @@
 version: 2.1 # use CircleCI 2.0
 orbs:
+    docker: circleci/docker@1.0.1
     go: circleci/go@1.7.2
     kube-orb: circleci/kubernetes@0.11.0
 commands:
@@ -28,23 +29,6 @@ commands:
 
             # Starting systemd user service
             systemctl --user start podman.socket
-  test-skupper-binary:
-    description: Run skupper command in different images
-    parameters:
-      image:
-        type: string
-      tag:
-        type: string
-    docker:
-      - image: << params.image >>:<< params.tag >>
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: "Run the skupper binary"
-          command: | 
-            cd skupper
-            ./skupper version
   verify-go:
     steps:
       - go/install:
@@ -222,7 +206,7 @@ jobs: # basic units of work in a run
       - run:
           command: echo "Creating a fake release"
             
-  test-skupper-binary-all:
+  build-skupper-binary:
     description: Test the skupper binary against all images
     executor:
       name: go/default
@@ -230,19 +214,24 @@ jobs: # basic units of work in a run
     steps:
       - clone-skupper
       - generate-client
-      - test-skupper-binary:
-          image: centos
-          tag: stream9
-      - test-skupper-binary:
-          image: centos
-          tag: stream8
-      - test-skupper-binary:
-          image: fedora
-          tag: 38
-      - test-skupper-binary:
-          image: fedora
-          tag: 39
 
+  test-skupper-binary:
+    description: Run skupper command in different images
+    parameters:
+      image:
+        type: string
+      tag:
+        type: string
+    docker:
+      - image: << params.image >>:<< params.tag >>
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: "Run the skupper binary"
+          command: | 
+            cd skupper
+            ./skupper version
 
 anchors:
   branch_filters: &run_for_master_branch
@@ -271,7 +260,19 @@ workflows:
 #       - release
   build-workflow:
     jobs:
-      - test-skupper-binary-all
+      - build-skupper-binary:
+      - test-skupper-binary:
+          image: centos
+          tag: stream9
+      - test-skupper-binary:
+          image: centos
+          tag: stream8
+      - test-skupper-binary:
+          image: fedora
+          tag: 38
+      - test-skupper-binary:
+          image: fedora
+          tag: 39
 #      - skupper-podman-tests:
 #          context: test-fernando
 #      - use-registry:
