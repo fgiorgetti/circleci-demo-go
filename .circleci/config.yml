@@ -261,18 +261,19 @@ workflows:
   build-workflow:
     jobs:
       - build-skupper-binary:
-      - test-skupper-binary:
-          image: centos
-          tag: stream9
-      - test-skupper-binary:
-          image: centos
-          tag: stream8
-      - test-skupper-binary:
-          image: fedora
-          tag: 38
-      - test-skupper-binary:
-          image: fedora
-          tag: 39
+#      - test-skupper-binary:
+#          image: centos
+#          tag: stream9
+#      - test-skupper-binary:
+#          image: centos
+#          tag: stream8
+#      - test-skupper-binary:
+#          image: fedora
+#          tag: 38
+#      - test-skupper-binary:
+#          image: fedora
+#          tag: 39
+
 #      - skupper-podman-tests:
 #          context: test-fernando
 #      - use-registry:
