@@ -266,11 +266,15 @@ workflows:
             parameters:
               image: ["centos"]
               tag: ["stream8", "stream9"]
+          requires:
+            - build-skupper-binary
       - test-skupper-binary:
           matrix:
             parameters:
               image: ["fedora"]
               tag: ["38", "39"]
+          requires:
+            - build-skupper-binary
 #      - test-skupper-binary:
 #          matrix:
 #            parameters:
