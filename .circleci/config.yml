@@ -71,7 +71,7 @@ commands:
       - run:
           name: "clone skupper repo"
           command: |
-            git clone -b podman-update https://github.com/fgiorgetti/skupper
+            git clone https://github.com/skupperproject/skupper
   generate-client:
     steps:
       - run:
@@ -205,6 +205,45 @@ jobs: # basic units of work in a run
       - run:
           command: echo "Creating a fake release"
             
+  test_skupper_binary_all:
+    description: Test the skupper binary against all images
+    executor:
+      name: go/default
+      tag: "1.20"
+    steps:
+      - clone-skupper
+      - generate-client
+      - test_skupper_binary:
+          image: centos
+          tag: stream9
+      - test_skupper_binary:
+          image: centos
+          tag: stream8
+      - test_skupper_binary:
+          image: fedora
+          tag: 38
+      - test_skupper_binary:
+          image: fedora
+          tag: 39
+
+  test_skupper_binary:
+    description: Run skupper command in different images
+    parameters:
+      image:
+        type: string
+      tag:
+        type: string
+    docker:
+      - image: << params.image >>:<< params.tag >>
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: "Run the skupper binary"
+          command: | 
+            cd skupper
+            ./skupper version
+
 anchors:
   branch_filters: &run_for_master_branch
     filters:
@@ -220,20 +259,21 @@ executors:
 
 workflows:
   version: 2.1
-  nightly-release:
-    triggers:
-      - schedule:
-          cron: "52 14 * * *"
-          filters:
-            branches:
-              only:
-                - master
-    jobs:
-       - release
+#  nightly-release:
+#    triggers:
+#      - schedule:
+#          cron: "52 14 * * *"
+#          filters:
+#            branches:
+#              only:
+#                - master
+#    jobs:
+#       - release
   build-workflow:
     jobs:
-      - skupper-podman-tests:
-          context: test-fernando
+      - test_skupper_binary_all
+#      - skupper-podman-tests:
+#          context: test-fernando
 #      - use-registry:
 #          requires:
 #            - skupper-podman-tests
