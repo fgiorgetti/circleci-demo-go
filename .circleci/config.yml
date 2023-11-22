@@ -198,6 +198,12 @@ jobs: # basic units of work in a run
             ls -ld /tmp/images
             ls -l /tmp/images
             cat /tmp/images/image.data
+  release:
+    description: "fake release"
+    executor: my-executor
+    steps:
+      - run:
+          command: echo "Creating a fake release"
             
 anchors:
   branch_filters: &run_for_master_branch
@@ -214,6 +220,16 @@ executors:
 
 workflows:
   version: 2.1
+  nightly-release:
+    triggers:
+      - schedule:
+          cron: "52 14 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+       - release
   build-workflow:
     jobs:
       - skupper-podman-tests:
