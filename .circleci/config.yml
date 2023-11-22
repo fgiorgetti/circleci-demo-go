@@ -264,8 +264,8 @@ workflows:
       - test-skupper-binary:
           matrix:
             parameters:
-              image: centos
-              tag: stream9
+              image: "centos"
+              tag: "stream9"
 #      - test-skupper-binary:
 #          matrix:
 #            parameters:
