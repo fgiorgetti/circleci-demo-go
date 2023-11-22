@@ -262,21 +262,25 @@ workflows:
     jobs:
       - build-skupper-binary
       - test-skupper-binary:
-          parameters:
-            image: centos
-            tag: stream9
+          matrix:
+            parameters:
+              image: centos
+              tag: stream9
       - test-skupper-binary:
-          parameters:
-           image: centos
-            tag: stream8
+          matrix:
+            parameters:
+             image: centos
+              tag: stream8
       - test-skupper-binary:
-          parameters:
-            image: fedora
-            tag: 38
+          matrix:
+            parameters:
+              image: fedora
+              tag: 38
       - test-skupper-binary:
-          parameters:
-            image: fedora
-            tag: 39
+          matrix:
+            parameters:
+              image: fedora
+              tag: 39
 
 #      - skupper-podman-tests:
 #          context: test-fernando
