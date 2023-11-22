@@ -214,6 +214,11 @@ jobs: # basic units of work in a run
     steps:
       - clone-skupper
       - generate-client
+      - persist_to_workspace:
+          root: .
+          paths:
+            - skupper
+
 
   test-skupper-binary:
     description: Run skupper command in different images
