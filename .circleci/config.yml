@@ -235,9 +235,10 @@ jobs: # basic units of work in a run
       name: go/default
       tag: "1.20"
     steps:
-      - run: git clone https://github.com/skupperproject/skupper
-      - go/mod-download-cached
-      - run: make generate-client
+      - run: |
+          git clone https://github.com/skupperproject/skupper
+          cd skupper
+          make generate-client
 
       - compile_go_program:
           goos: linux
