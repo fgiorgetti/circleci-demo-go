@@ -165,10 +165,10 @@ commands:
       - run:
           name: Building << parameters.platform >>
           command: >-
+            cd skupper
             VERSION="${CIRCLE_TAG:-ci-${CIRCLE_BUILD_NUM}}";
             GOOS=<< parameters.goos >>
             GOARCH=<< parameters.goarch >>
-            cd skupper
             go build -ldflags "-X github.com/skupperproject/skupper/pkg/version.Version=${VERSION}"
             -o dist/<< parameters.platform >>/skupper<< parameters.exesuffix >>
             ./cmd/skupper
