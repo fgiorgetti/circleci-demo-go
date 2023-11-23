@@ -333,7 +333,7 @@ jobs: # basic units of work in a run
               fi
             done
             cd ${BASEDIR}
-            ghr -t ${GH_CIRCLECI_DEMO_GO_TOKEN} -u fgiorgetti -r circleci-demo-go -c ${CIRCLE_SHA1} -replace -prerelease ${VERSION} "${BASEDIR}/archives"
+            ghr -t "${GH_CIRCLECI_DEMO_GO_TOKEN}" -u fgiorgetti -r circleci-demo-go -c "main" -replace -prerelease "${VERSION}" "${BASEDIR}/archives"
 
 
 anchors:
