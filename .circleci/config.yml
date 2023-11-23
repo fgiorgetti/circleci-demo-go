@@ -332,7 +332,7 @@ yaml-templates:
     filters:
       branches:
         ignore: /.*/
-        only: /main/
+        only: /master/
 
 workflows:
   version: 2.1
