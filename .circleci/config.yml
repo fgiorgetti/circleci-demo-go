@@ -149,6 +149,30 @@ commands:
           command: minikube tunnel
           name: Start Minikube Tunnel
           background: true
+  compile_go_program:
+    description: Compile specified platform.
+    parameters:
+      platform:
+        type: string
+      goos:
+        type: string
+      goarch:
+        type: string
+      exesuffix:
+        default: ""
+        type: string
+    steps:
+      - run:
+          name: Building << parameters.platform >>
+          command: >-
+            VERSION="${CIRCLE_TAG:-ci-${CIRCLE_BUILD_NUM}}";
+            GOOS=<< parameters.goos >>
+            GOARCH=<< parameters.goarch >>
+            cd skupper
+            go build -ldflags "-X github.com/skupperproject/skupper/pkg/version.Version=${VERSION}"
+            -o dist/<< parameters.platform >>/skupper<< parameters.exesuffix >>
+            ./cmd/skupper
+
 jobs: # basic units of work in a run
   skupper-podman-tests:
     description: "Run podman system tests for Skupper"
@@ -274,6 +298,7 @@ jobs: # basic units of work in a run
       - run:
           name: "Run the skupper binary"
           command: |
+            cd skupper
             cd dist/linux-amd64
             ./skupper version
 
@@ -294,6 +319,7 @@ jobs: # basic units of work in a run
       - run:
           name: "Create a Pre-Release on GitHub"
           command: |
+            cd skupper
             VERSION="main"
             BASEDIR=`pwd`
             mkdir "${BASEDIR}/archives"
@@ -348,6 +374,7 @@ workflows:
 #       - release
   build-workflow:
     jobs:
+      - clone-skupper
       - build-all:
           <<: *run_for_all_branches_and_numeric_tags
       - test-skupper-binary:
