@@ -382,7 +382,7 @@ workflows:
           matrix:
             parameters:
               image:
-                - quay.io/centos/centos:stream8
+#                - quay.io/centos/centos:stream8
                 - quay.io/centos/centos:stream9
                 - quay.io/fedora/fedora:38
                 - quay.io/fedora/fedora:39
