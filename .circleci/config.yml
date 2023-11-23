@@ -392,11 +392,14 @@ workflows:
           <<: *run_for_main_branch
           requires:
             - publish-github-main-images
+            - test-skupper-binary
+            - build-all
 
       - publish-github-main-images:
           <<: *run_for_main_branch
           requires:
             - build-all
+            - test-skupper-binary
           context:
             - test-fernando
 
