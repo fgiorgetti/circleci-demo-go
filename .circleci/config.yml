@@ -206,7 +206,7 @@ jobs: # basic units of work in a run
       - run:
           command: echo "Creating a fake release"
             
-build-all:
+  build-all:
     executor:
       name: go/default
       tag: "1.20"
