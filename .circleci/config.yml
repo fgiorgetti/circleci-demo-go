@@ -395,6 +395,8 @@ workflows:
 
       - publish-github-main-images:
           <<: *run_for_main_branch
+          requires:
+            - build-all
           context:
             - test-fernando
 
