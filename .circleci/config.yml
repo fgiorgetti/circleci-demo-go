@@ -401,5 +401,5 @@ workflows:
             - build-all
             - test-skupper-binary
           context:
-            - test-fernando
+            - circleci-demo-go
 
