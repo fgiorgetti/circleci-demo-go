@@ -374,7 +374,6 @@ workflows:
 #       - release
   build-workflow:
     jobs:
-      - clone-skupper
       - build-all:
           <<: *run_for_all_branches_and_numeric_tags
       - test-skupper-binary:
