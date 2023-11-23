@@ -165,7 +165,7 @@ commands:
       - run:
           name: Building << parameters.platform >>
           command: >-
-            cd skupper
+            cd skupper;
             VERSION="${CIRCLE_TAG:-ci-${CIRCLE_BUILD_NUM}}";
             GOOS=<< parameters.goos >>
             GOARCH=<< parameters.goarch >>
