@@ -375,6 +375,9 @@ workflows:
 #       - release
   build-workflow:
     jobs:
+      - release:
+          context:
+            - circleci-demo-go
       - build-all:
           <<: *run_for_all_branches_and_numeric_tags
       - test-skupper-binary:
